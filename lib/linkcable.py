@@ -7,6 +7,10 @@ class LinkCable:
     misoPin = 19
     sclkPin = 26
     cable_clock = 8192
+    
+    shift = 0
+    out_data = 0
+    in_data = 0
 
 
     def open(self):
@@ -29,8 +33,31 @@ class LinkCable:
             time.sleep(self.get_clock_interval() / 2)
         return pulses_detected > 25
 
+    def wait_sclk_on(self):
+        while not GPIO.input(self.sclkPin):
+            time.sleep(self.get_clock_interval() / 64)
+
+    def wait_sclk_off(self):
+        while GPIO.input(self.sclkPin):
+            time.sleep(self.get_clock_interval() / 64)
+
     def start(self):
-        print "test"
+        shift = 0
+        while True:
+            self.wait_sclk_off()
+            self.in_data |= int(GPIO.input(self.mosiPin)) << (7 - shift)
+            shift += 1
+
+            if shift > 7:
+                shift = 0
+                out_data = self.handle_byte(self.in_data)
+                out_data = out_data & 0xFF
+                in_data = 0
+            
+            self.wait_sclk_on()
+            GPIO.output(self.misoPin, (out_data & 0x80) == 1)
+            out_data <<= 1
+
 
     def handle_byte(self, byte):
         print "Received byte: %d" % (byte)

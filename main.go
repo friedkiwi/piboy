@@ -1,7 +1,14 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/friedkiwi/piboy/linkcable"
+)
 
 func main() {
-	fmt.Println("Hello, world!")
+	linkcable.Open()
+
+	defer linkcable.Close()
+
+	fmt.Println(linkcable.GetVersion())
 }

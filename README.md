@@ -2,5 +2,5 @@
 
 ## Dependencies
 
-* gpiozero
+* RPI.GPIO
 * python2.7

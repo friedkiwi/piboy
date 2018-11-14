@@ -4,5 +4,6 @@ from lib.linkcable import LinkCable
 
 print "Hello, world!"
 lc = LinkCable()
+lc.open()
 
-print lc.x
+lc.start()

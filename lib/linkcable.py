@@ -43,6 +43,7 @@ class LinkCable:
 
     def start(self):
         shift = 0
+        out_data = 0
         while True:
             self.wait_sclk_off()
             self.in_data |= int(GPIO.input(self.mosiPin)) << (7 - shift)
@@ -55,12 +56,13 @@ class LinkCable:
                 in_data = 0
             
             self.wait_sclk_on()
-            GPIO.output(self.misoPin, (out_data & 0x80) == 1)
+            GPIO.output(self.mosiPin, (out_data & 0x80) == 1)
             out_data <<= 1
 
 
     def handle_byte(self, byte):
         print "Received byte: %d" % (byte)
+        return byte
 
     def close(self):
         GPIO.cleanup()
